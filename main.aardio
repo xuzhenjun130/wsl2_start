@@ -1,0 +1,25 @@
+import console;
+import process.popen;
+import iniHosts;
+
+//获取wsl 中的ip，（确保sudo不用输入密码，/etc/sudoers 增加：sherman  ALL=(ALL:ALL) NOPASSWD: ALL）
+
+var prcs = process.popen.cmd("ubuntu run /home/sherman/wsl_ip.sh"); //执行wsl中的命令
+
+var ip;
+for( all,out,err in prcs.each() ){
+    if(out){
+    	ip = string.trim(out)
+    }
+}
+if(!ip){
+	console.dump('获取不到wsl ip');
+}else{
+	console.dump(ip);
+}
+//修改配置
+var sec = iniHosts().ini.getSection('本地环境');
+sec.hosts = string.unhex(sec.hosts) //16进转字符串
+data = string.replace(sec.hosts,sec.ip,ip);
+var rs = iniHosts().updateSection(sec.name, sec.name, sec.status, data, ip);
+console.dump(rs);
